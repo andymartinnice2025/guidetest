@@ -57,12 +57,20 @@
       const proxy = "https://cors-anywhere.herokuapp.com/";  // CORS Proxy URL
       const targetUrl = "https://channels-de-na1.niceincontact.com/web-analytics/1.0/tenants/1092/visitors/28505b5c-36ba-43f7-b124-16738f8b4335/events"; // CXone API endpoint
 
+      // Helper function to generate a UUID
+      function generateUUID() {
+        return crypto.randomUUID();  // Use native browser function to generate UUID
+      }
+
       // Updated data based on CXone's expected format
       const data = {
-        "id": "unique_event_id_12345",  // Unique event ID (you can generate a UUID here)
-        "type": "custom_event",          // Event type (e.g., 'page_view', 'custom_event')
+        "id": generateUUID(),  // Unique event ID (generated UUID)
+        "type": "custom_event", // Event type (e.g., 'page_view', 'custom_event')
         "createdAtWithMilliseconds": new Date().toISOString(),  // Timestamp with milliseconds
-        "destination": window.location.href,  // Destination URL (current page)
+        "destination": {        // Destination as an object, not just a string
+          "url": window.location.href,  // The URL of the current page
+          "path": window.location.pathname  // You can also add other details like path
+        },
         "visitorData": {
           "user_status": "new_visitor",
           "qm_session_id": "TEST_SESSION_ID"
@@ -91,3 +99,4 @@
 
 </body>
 </html>
+
