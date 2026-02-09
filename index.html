@@ -54,22 +54,17 @@
   <!-- CORS Proxy and Custom Analytics Request Script -->
   <script>
     document.getElementById('sendAnalytics').addEventListener('click', function () {
-      const proxy = "https://cors-anywhere.herokuapp.com/";  // CORS Proxy URL
       const targetUrl = "https://channels-de-na1.niceincontact.com/web-analytics/1.0/tenants/1092/visitors/28505b5c-36ba-43f7-b124-16738f8b4335/events"; // CXone API endpoint
 
-      // Helper function to generate a UUID (for 'id' field)
-      function generateUUID() {
-        return crypto.randomUUID();  // Native browser function to generate UUID
-      }
-
-      // Updated data based on CXone's expected format
+      // Prepare the analytics data
       const data = {
-        "id": generateUUID(),  // Generate unique event ID as a valid UUID
+        "id": "unique_event_id_12345",  // Example unique event ID
         "type": "custom_event", // Event type (e.g., 'page_view', 'custom_event')
         "createdAtWithMilliseconds": new Date().toISOString(),  // Timestamp with milliseconds
-        "destination": {        // Destination as an object, not just a string
+        "destination": {        // Destination as an object
+          "id": "destination_id_12345", // Example destination ID
           "url": window.location.href,  // The URL of the current page
-          "path": window.location.pathname  // Optional: You can add the path if needed
+          "path": window.location.pathname  // Optional: the path (can be used to specify route)
         },
         "visitorData": {
           "user_status": "new_visitor",
@@ -77,8 +72,8 @@
         }
       };
 
-      // Send the analytics request through the proxy
-      fetch(proxy + targetUrl, {
+      // Attempt to send the analytics request (this is where CORS will fail)
+      fetch(targetUrl, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
