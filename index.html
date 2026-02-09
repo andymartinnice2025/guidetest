@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>CXone Test Integration</title>
+  <!-- Optional: Add any additional styles you need here -->
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      margin: 0;
+      padding: 0;
+      background-color: #f4f4f4;
+    }
+    .content {
+      padding: 20px;
+      text-align: center;
+    }
+    h1 {
+      color: #333;
+    }
+  </style>
+</head>
+<body>
+  <div class="content">
+    <h1>CXone Integration Test</h1>
+    <p>Check the console for the analytics data being sent.</p>
+  </div>
+
+  <!-- CXone Integration Script -->
+  <script>
+    (function (n,u) {
+      window.CXoneDfo=n,
+      window[n]=window[n]||function(){(window[n].q=window[n].q||[]).push(arguments)},window[n].u=u,
+      e=document.createElement("script"),e.type="module",e.src=u+"?"+Math.round(Date.now()/1e3/3600),
+      document.head.appendChild(e);
+    })('cxone','https://web-modules-de-na1.niceincontact.com/loader/1/loader.js');
+
+    cxone('init', '1092');
+    cxone('guide', 'init');
+
+    function getCookie(name) {
+      const value = `; ${document.cookie}`;
+      const parts = value.split(`; ${name}=`);
+      if (parts.length === 2) return parts.pop().split(';').shift();
+    }
+
+    const sessionId = getCookie("QuantumMetricSessionID");
+    console.log("QuantumMetricSessionID cookie value:", sessionId);
+
+    (function waitForCXone(retries = 10) {
+      if (typeof cxone === 'function') {
+        try {
+          /* -------------------------
+             Don't set customer ID anymore (it will default)
+          -------------------------- */
+
+          /* -------------------------
+             Optional: Set Custom Field for Quantum Metric Session ID (if still relevant)
+          -------------------------- */
+          if (sessionId) {
+            cxone('chat', 'setCustomerCustomField', 'qmsessionid', sessionId);
+            console.log('Custom field set with session ID:', sessionId);
+          } else {
+            console.warn('QuantumMetricSessionID cookie not found.');
+          }
+
+          /* -------------------------
+             Guide behaviour
+          -------------------------- */
+          cxone('guide', 'hidePreSurvey');
+
+          /* -------------------------
+             Analytics (AFTER identity)
+          -------------------------- */
+
+          // Visitor variables (persist across events)
+          cxone('analytics', 'setVisitorVariable', 'qm_session_id', sessionId || 'none');
+          cxone('analytics', 'setVisitorVariable', 'user_type', 'web_visitor');
+
+          // Visitor events (point-in-time)
+          cxone('analytics', 'setVisitorEvent', 'page_view', window.location.pathname);
+          cxone('analytics', 'setVisitorEvent', 'guide_loaded', 'true');
+
+          // Optional conversion (only if you want one)
+          cxone('analytics', 'storeConversion', 'guide_engagement', 1);
+
+          console.log('CXone analytics events and variables sent');
+
+        } catch (err) {
+          console.error('Error during CXone setup:', err);
+        }
+
+      } else if (retries > 0) {
+        setTimeout(() => waitForCXone(retries - 1), 500);
+      } else {
+        console.error('cxone function not available after retries.');
+      }
+    })();
+  </script>
+</body>
+</html>
