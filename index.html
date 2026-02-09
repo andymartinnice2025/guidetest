@@ -59,9 +59,9 @@
 
       // Updated data based on CXone's expected format
       const data = {
-        "id": "unique_event_id_12345",  // Unique event ID
+        "id": "unique_event_id_12345",  // Unique event ID (you can generate a UUID here)
         "type": "custom_event",          // Event type (e.g., 'page_view', 'custom_event')
-        "createdAtWithMilliseconds": new Date().toISOString(),  // Timestamp
+        "createdAtWithMilliseconds": new Date().toISOString(),  // Timestamp with milliseconds
         "destination": window.location.href,  // Destination URL (current page)
         "visitorData": {
           "user_status": "new_visitor",
