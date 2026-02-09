@@ -3,34 +3,19 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>CXone Guide with Analytics</title>
+  <title>CXone Guide Analytics</title>
   <style>
     body {
       font-family: Arial, sans-serif;
       padding: 20px;
       text-align: center;
     }
-
-    button {
-      padding: 10px;
-      background-color: #4CAF50;
-      color: white;
-      border: none;
-      cursor: pointer;
-    }
-
-    button:hover {
-      background-color: #45a049;
-    }
   </style>
 </head>
 <body>
 
   <h1>CXone Guide Analytics Example</h1>
-  <p>Click the button below to send a custom test event.</p>
-
-  <!-- Button to trigger the custom event -->
-  <button id="sendAnalytics">Send Custom Test Event</button>
+  <p>The Guide widget is loading and will automatically send analytics events.</p>
 
   <!-- CXone Guide Widget Script -->
   <script>
@@ -49,47 +34,6 @@
     // Initialize the Guide widget
     cxone('init', '1092');
     cxone('guide', 'init'); // This automatically sends default events like page_view and guide_loaded
-  </script>
-
-  <!-- CORS Proxy and Custom Analytics Request Script -->
-  <script>
-    document.getElementById('sendAnalytics').addEventListener('click', function () {
-      const targetUrl = "https://channels-de-na1.niceincontact.com/web-analytics/1.0/tenants/1092/visitors/28505b5c-36ba-43f7-b124-16738f8b4335/events"; // CXone API endpoint
-
-      // Prepare the analytics data
-      const data = {
-        "id": "unique_event_id_12345",  // Example unique event ID
-        "type": "custom_event", // Event type (e.g., 'page_view', 'custom_event')
-        "createdAtWithMilliseconds": new Date().toISOString(),  // Timestamp with milliseconds
-        "destination": {        // Destination as an object
-          "id": "destination_id_12345", // Example destination ID
-          "url": window.location.href,  // The URL of the current page
-          "path": window.location.pathname  // Optional: the path (can be used to specify route)
-        },
-        "visitorData": {
-          "user_status": "new_visitor",
-          "qm_session_id": "TEST_SESSION_ID"
-        }
-      };
-
-      // Attempt to send the analytics request (this is where CORS will fail)
-      fetch(targetUrl, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify(data)  // Send the JSON data
-      })
-        .then(response => response.json())
-        .then(responseData => {
-          console.log('Response from CXone:', responseData);
-          alert('Test event sent successfully!');
-        })
-        .catch(error => {
-          console.error('Error:', error);
-          alert('Failed to send test event.');
-        });
-    });
   </script>
 
 </body>
